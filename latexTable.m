@@ -65,6 +65,9 @@ function latex = latexTable(input)
 % % Switch to generate a complete LaTex document or just a table:
 % input.makeCompleteLatexDocument = 1;
 %
+% % Disable print output
+% input.disp = 0;
+%
 % % % Now call the function to generate LaTex code:
 % latex = latexTable(input);
 
@@ -90,6 +93,7 @@ if ~isfield(input,'tableBorders'),input.tableBorders = 1;end
 if ~isfield(input,'tableCaption'),input.tableCaption = 'MyTableCaption';end
 if ~isfield(input,'tableLabel'),input.tableLabel = 'MyTableLabel';end
 if ~isfield(input,'makeCompleteLatexDocument'),input.makeCompleteLatexDocument = 0;end
+if ~isfield(input,'disp'),input.disp = 1;end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % process table datatype
@@ -200,6 +204,8 @@ if input.makeCompleteLatexDocument
 end
 
 % print latex code to console:
-disp(char(latex));
+if input.disp
+    disp(char(latex));
+end
 
 end
