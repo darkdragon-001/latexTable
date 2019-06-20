@@ -43,6 +43,7 @@ function latex = latexTable(input)
 % % number of table columns or rows that the preceding formatting-string applies.
 % % Please make sure the sum of numberOfValues_ matches the number of columns or
 % % rows in input.tableData!
+% % We additionally added '%l' and '%b' for logical/boolean data type.
 % %
 % % input.dataFormat = {'%.3f'}; % uses three digit precision floating point for all data values
 % input.dataFormat = {'%.3f',2,'%.1f',1}; % three digits precision for first two columns, one digit for the last
@@ -177,6 +178,13 @@ for i=1:size(C,1)
           dataValue = input.dataNanString;
         elseif isnumeric(dataValue)
           dataValue = num2str(dataValue,dataFormatArray{i,j});
+        elseif islogical(dataValue)
+          if strcmp(dataFormatArray{i,j},'%l') || strcmp(dataFormatArray{i,j},'%b')
+            logicalStrings={'false','true'};
+            dataValue = logicalStrings{1+dataValue};
+          else
+            dataValue = num2str(dataValue,dataFormatArray{i,j});
+          end
         end
         if j==1
             rowStr = dataValue;
