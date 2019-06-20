@@ -1,8 +1,42 @@
 % This script runs two simple examples of latexTable.m
 clc; clear input;
 
-%% Example 1: using an numerical array as data input
-fprintf('Example 1: using an array as data input\n\n');
+%% Example 1: a very simple example
+% Clear the selected options from previous example
+clear input;
+fprintf('\n\nExample 1: a very simple example\n\n');
+
+input.data = [1,2;3,4]; 
+latex = latexTable(input);
+
+
+%% Example 2: generate a table and save as a LaTex file
+% Clear the selected options from previous example
+clear input;
+fprintf('\n\nExample 2: generate a LaTex file from your data\n\n');
+
+% some data
+input.data = [1,2;3,4]; 
+
+% we want a complete LaTex document
+input.makeCompleteLatexDocument = 1;
+
+% generate LaTex code
+latex = latexTable(input);
+
+% save LaTex code as file
+fid=fopen('MyLatex.tex','w');
+[nrows,ncols] = size(latex);
+for row = 1:nrows
+    fprintf(fid,'%s\n',latex{row,:});
+end
+fclose(fid);
+fprintf('\n... your LaTex code has been saved as ''MyLatex.tex'' in your working directory\n');
+
+
+%% Example 3: using an numerical array as data input
+clear input;
+fprintf('\n\nExample 3: using an array as data input\n\n');
 
 % numeric values you want to tabulate:
 % this field has to be an array or a MATLAB table
@@ -41,8 +75,14 @@ input.dataNanString = '-';
 % Column alignment in Latex table ('l'=left-justified, 'c'=centered,'r'=right-justified):
 input.tableColumnAlignment = 'c';
 
-% Switch table borders on/off:
+% Switch table borders on/off (borders are enabled by default):
 input.tableBorders = 1;
+
+% Uses booktabs basic formating rules ('1' = using booktabs, '0' = not using booktabs). 
+% Note that this option requires the booktabs package being available in your LaTex. 
+% Also, setting the booktabs option to '1' overwrites input.tableBorders if it exists.
+% input.booktabs = 0;
+
 
 % LaTex table caption:
 input.tableCaption = 'MyTableCaption';
@@ -57,18 +97,18 @@ input.makeCompleteLatexDocument = 1;
 latex = latexTable(input);
 
 
-%% Example 2: using a MATLAB table as data input
-
+%% Example 4: using a MATLAB table as data input
+% Clear the selected options from previous example
+clear input;
+fprintf('\n\nExample 4: using MATLAB table datatype as data input\n\n');
 % Please note: since the table datatype was introduced in MATLAB version r2013b,
 % you cannot use this feature in older versions of MATLAB!
 % Check MATLAB version:
 DateNumberThisVersion = datenum(version('-date'),'mmmm dd, yyyy');
 if DateNumberThisVersion < 735459 % MATLAB r2013b release day was datenumber 735459
-    fprintf('\n\nCannot run example 2: This MATLAB version does not support datatype ''table''!\n');
-    break;
+    fprintf('\n\nCannot run example 4: This MATLAB version does not support datatype ''table''!\n');
+    return;
 end
-
-fprintf('\n\nExample 2: using MATLAB table datatype as data input\n\n');
 
 % Set up a MATLAB table (similar to example used in MATLAB docs):
 % Please note that the resulting LaTex table is row-based, not
@@ -91,6 +131,33 @@ input.tableColumnAlignment = 'c';
 
 % Switch table borders on/off:
 input.tableBorders = 1;
+
+% Switch to generate a complete LaTex document or just a table:
+input.makeCompleteLatexDocument = 1;
+
+% Now call the function to generate LaTex code:
+latex = latexTable(input);
+
+
+%% Example 5: using string data that includes LaTex code in a MATLAB table
+% Clear the selected options from previous example
+clear input;
+fprintf('\n\nExample 5: using string data that includes LaTex code in a MATLAB table\n\n');
+% Please note: Make sure to enclose your LaTex code parts in $-environments!
+% e.g if you want to have a '\pm' for plotting a plus-minus symbol your code
+% should be '$\pm$'
+
+% Set up data and store it in a MATLAB table
+rowNames = {'row1'; 'row2'};
+var1={'5.4 $\pm$ .01'; '6.4 $\pm$ .01'};
+var2={'50.4 $\pm$ .02'; '60.4 $\pm$ .02'};
+T = table(var1, var2,  'RowNames', rowNames);
+
+% Now use this table as input in our input struct:
+input.data = T;
+
+% Switch transposing/pivoting your table if needed:
+input.transposeTable = 0;
 
 % Switch to generate a complete LaTex document or just a table:
 input.makeCompleteLatexDocument = 1;
