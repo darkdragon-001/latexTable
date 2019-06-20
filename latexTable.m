@@ -228,7 +228,8 @@ for i=1:size(C,1)
         dataValue = C{i,j};
         if iscell(dataValue)
           dataValue = dataValue{:};
-        elseif isnan(dataValue)
+        end
+        if isnan(dataValue)
           dataValue = input.dataNanString;
         elseif isnumeric(dataValue)
           dataValue = num2str(dataValue,dataFormatArray{i,j});
